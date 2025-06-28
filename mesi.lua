@@ -216,13 +216,13 @@ end
 PlayButton.MouseButton1Click:Connect(function()
 	local remote = findRemoteEvent("AC6_FE_Sounds")
 	if not remote then
-		warn("RemoteEvent 'AC6_FE_Sounds' no encontrado")
+		print("RemoteEvent 'AC6_FE_Sounds' no encontrado")
 		return
 	end
 
 	local musicId = TextBox.Text
 	if musicId == "" or not tonumber(musicId) then
-		warn("Music ID inválido.")
+		print("Music ID inválido.")
 		return
 	end
 
