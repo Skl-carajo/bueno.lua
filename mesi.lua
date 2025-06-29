@@ -2,7 +2,7 @@ local Players = game:GetService("Players")
 local lp = Players.LocalPlayer
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "SoundFEUI"
+gui.Name = "BackfireSpamUI"
 gui.Parent = game.CoreGui
 
 local frame = Instance.new("Frame")
@@ -15,7 +15,7 @@ frame.Draggable = true
 frame.Parent = gui
 
 local title = Instance.new("TextLabel")
-title.Text = "🔊 Spammer RemoteEvents FE"
+title.Text = "💥 Spammer Backfire_FE"
 title.Size = UDim2.new(1, 0, 0, 30)
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 title.TextColor3 = Color3.new(1, 1, 1)
@@ -27,48 +27,44 @@ local spamming = false
 local button = Instance.new("TextButton")
 button.Size = UDim2.new(1, -20, 0, 50)
 button.Position = UDim2.new(0, 10, 0, 40)
-button.Text = "Iniciar Spam FE"
-button.BackgroundColor3 = Color3.fromRGB(80, 80, 20)
+button.Text = "Iniciar Spam Backfire"
+button.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
 button.TextColor3 = Color3.new(1, 1, 1)
 button.Font = Enum.Font.SourceSansBold
 button.TextSize = 18
 button.Parent = frame
 
-local remoteNames = {
-	"Smoke_FE",
-	"Backfire_FE",
-	"AC6_FE_Sounds"
-}
+local toggle = true
 
 button.MouseButton1Click:Connect(function()
 	if spamming then
 		spamming = false
-		button.Text = "Iniciar Spam FE"
-		print("⏹️ Spam detenido")
+		button.Text = "Iniciar Spam Backfire"
+		print("⏹️ Backfire Spam detenido")
 	else
 		spamming = true
-		button.Text = "Parar Spam"
-		print("▶️ Buscando y ejecutando remotes...")
+		button.Text = "Parar Spam Backfire"
+		print("🔥 Comenzando spam Backfire_FE")
 
 		spawn(function()
 			while spamming do
-				local count = 0
+				local fired = 0
 				for _, obj in ipairs(workspace:GetDescendants()) do
-					if table.find(remoteNames, obj.Name) and obj:IsA("RemoteEvent") then
+					if obj:IsA("RemoteEvent") and obj.Name == "Backfire_FE" then
 						pcall(function()
-							obj:FireServer() -- SIN argumentos
-							count += 1
+							local mode = toggle and "Backfire1" or "Backfire2"
+							obj:FireServer(mode)
+							fired += 1
 						end)
 					end
 				end
-
-				if count > 0 then
-					print("✅ Disparados "..count.." RemoteEvents FE")
+				toggle = not toggle
+				if fired > 0 then
+					print("💥 Enviados", fired, "comandos", toggle and "Backfire1" or "Backfire2")
 				else
-					print("⚠️ No se encontraron RemoteEvents con nombre válido")
+					print("⚠️ No se encontraron Backfire_FE activos")
 				end
-
-				wait(0.15)
+				wait(0.2)
 			end
 		end)
 	end
