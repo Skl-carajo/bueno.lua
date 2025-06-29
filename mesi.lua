@@ -1,17 +1,6 @@
--- Script AC66 Sound UI con spam, volumen y pitch
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local lp = Players.LocalPlayer
-
-local function findAllAC6Vehicles()
-	local vehicles = {}
-	for _, v in pairs(workspace:GetChildren()) do
-		if v:FindFirstChild("Owner") and (v:FindFirstChild("AChassis") or v:FindFirstChild("A-Chassis Tune")) then
-			table.insert(vehicles, v)
-		end
-	end
-	return vehicles
-end
 
 local sonidos = {
 	"Idle",
@@ -23,13 +12,29 @@ local sonidos = {
 	"Stop"
 }
 
+local function findAllAC6Vehicles()
+	local vehicles = {}
+	for _, v in pairs(workspace:GetChildren()) do
+		if v:FindFirstChild("Owner") and (
+			v:FindFirstChild("AChassis") or
+			v:FindFirstChild("A-Chassis Tune") or
+			v:FindFirstChild("A chassis Tune") or
+			v:FindFirstChild("SmeersLightsHandler") or
+			v:FindFirstChild("Smoke_FE")
+		) then
+			table.insert(vehicles, v)
+		end
+	end
+	return vehicles
+end
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "AC66SoundUI"
 gui.Parent = game.CoreGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 240, 0, 480)
-frame.Position = UDim2.new(0.5, -120, 0.5, -240)
+frame.Size = UDim2.new(0, 280, 0, 540)
+frame.Position = UDim2.new(0.5, -140, 0.5, -270)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 0
 frame.Active = true
@@ -37,7 +42,7 @@ frame.Draggable = true
 frame.Parent = gui
 
 local title = Instance.new("TextLabel")
-title.Text = "🚗 AC66 Sonidos (Spam Incluido)"
+title.Text = "🚗 AC66 Sonidos (Soporte extendido + Spam)"
 title.Size = UDim2.new(1, 0, 0, 30)
 title.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 title.TextColor3 = Color3.new(1, 1, 1)
@@ -107,17 +112,39 @@ crearSlider("🎵 Pitch", 0.5, 2, pitch, 100 + #sonidos * 35, function(v)
 	pitch = v
 end)
 
-local function findSound(parent, name)
-	for _, obj in pairs(parent:GetChildren()) do
-		if obj:IsA("Sound") and obj.Name == name then
-			return obj
-		end
-		local found = findSound(obj, name)
-		if found then
-			return found
+local function findSoundInParts(parent, soundName)
+	for _, child in pairs(parent:GetChildren()) do
+		if child:IsA("Sound") and child.Name == soundName then
+			return child
 		end
 	end
 	return nil
+end
+
+local function findAndPlaySound(vehicle, soundName)
+	local partsToCheck = {
+		"AChassis",
+		"A-Chassis Tune",
+		"A chassis Tune",
+		"SmeersLightsHandler",
+		"Smoke_FE"
+	}
+
+	for _, partName in pairs(partsToCheck) do
+		local part = vehicle:FindFirstChild(partName)
+		if part then
+			local sound = findSoundInParts(part, soundName)
+			if sound then
+				sound.Volume = volumen
+				sound.PlaybackSpeed = pitch
+				sound:Stop()
+				sound.TimePosition = 0
+				sound:Play()
+				return true
+			end
+		end
+	end
+	return false
 end
 
 local function playSoundAllVehicles(soundName)
@@ -127,13 +154,8 @@ local function playSoundAllVehicles(soundName)
 		return
 	end
 	for _, veh in pairs(vehicles) do
-		local sound = findSound(veh, soundName)
-		if sound then
-			sound.Volume = volumen
-			sound.PlaybackSpeed = pitch
-			sound:Stop()
-			sound.TimePosition = 0
-			sound:Play()
+		local played = findAndPlaySound(veh, soundName)
+		if played then
 			print("▶️ Sonido '" .. soundName .. "' reproducido en vehículo: " .. tostring(veh.Name))
 		else
 			print("❌ No se encontró el sonido '" .. soundName .. "' en vehículo: " .. tostring(veh.Name))
