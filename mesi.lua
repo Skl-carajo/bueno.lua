@@ -241,3 +241,51 @@ spamButton.MouseButton1Click:Connect(function()
 		end)
 	end
 end)
+
+-- -------------- AGREGADO BOTÓN SPAM SQ smoke_fe -------------------
+
+local spamSmokeFe = false
+local spamSmokeFeButton = Instance.new("TextButton")
+spamSmokeFeButton.Size = UDim2.new(1, -20, 0, 30)
+spamSmokeFeButton.Position = UDim2.new(0, 10, 0, 420 + #sonidos * 35)
+spamSmokeFeButton.Text = "Spam SQ (Smoke_FE)"
+spamSmokeFeButton.BackgroundColor3 = Color3.fromRGB(80, 80, 20)
+spamSmokeFeButton.TextColor3 = Color3.new(1, 1, 1)
+spamSmokeFeButton.Font = Enum.Font.SourceSansBold
+spamSmokeFeButton.TextSize = 16
+spamSmokeFeButton.Parent = frame
+
+spamSmokeFeButton.MouseButton1Click:Connect(function()
+	if spamSmokeFe then
+		spamSmokeFe = false
+		spamSmokeFeButton.Text = "Spam SQ (Smoke_FE)"
+		print("⏹️ Spam SQ detenido")
+	else
+		spamSmokeFe = true
+		spamSmokeFeButton.Text = "Parar Spam SQ"
+		print("▶️ Spam SQ iniciado")
+
+		spawn(function()
+			while spamSmokeFe do
+				local car = workspace:FindFirstChild("2007 Toyota Camry")
+				if car then
+					local smokeFE = car:FindFirstChild("Smoke_FE")
+					if smokeFE and smokeFE:IsA("RemoteEvent") then
+						smokeFE:FireServer("SQ")
+					else
+						print("⚠️❌ No se encontró RemoteEvent 'Smoke_FE' en el auto")
+						spamSmokeFe = false
+						spamSmokeFeButton.Text = "Spam SQ (Smoke_FE)"
+						break
+					end
+				else
+					print("⚠️❌ No se encontró el auto '2007 Toyota Camry'")
+					spamSmokeFe = false
+					spamSmokeFeButton.Text = "Spam SQ (Smoke_FE)"
+					break
+				end
+				wait(0.1)
+			end
+		end)
+	end
+end)
