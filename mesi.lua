@@ -1,4 +1,4 @@
--- UI de control de sonido con verificación RespectFilteringEnabled
+-- UI de control de sonido con verificación RespectFilteringEnabled y spam de remotes
 
 local ScreenGui = Instance.new("ScreenGui")
 local Draggable = Instance.new("Frame")
@@ -24,125 +24,94 @@ local IY = Instance.new("TextButton")
 local UICorner_5 = Instance.new("UICorner")
 local TextLabel_2 = Instance.new("TextLabel")
 local WaitBox = Instance.new("TextBox")
+local SmokeBtn = Instance.new("TextButton")
+local BackfireBtn = Instance.new("TextButton")
+local AC6Btn = Instance.new("TextButton")
 
-ScreenGui.Name = "SoundFE_Control"
-ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+-- Services
+local SoundService = game:GetService("SoundService")
+local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
+local CoreGui = game:GetService("CoreGui")
+
+-- Setup base UI
+ScreenGui.Name = "SoundControlUI"
+ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 Draggable.Name = "Draggable"
 Draggable.Parent = ScreenGui
 Draggable.BackgroundTransparency = 1
+Draggable.Size = UDim2.new(0, 438, 0, 300)
 Draggable.Position = UDim2.new(0.35, 0, 0.3, 0)
-Draggable.Size = UDim2.new(0, 438, 0, 277)
+Draggable.Active = true
+Draggable.Draggable = true
 
 Frame.Parent = Draggable
-Frame.BackgroundTransparency = 1
-Frame.Size = UDim2.new(0, 438, 0, 277)
+Frame.Size = UDim2.new(1, 0, 1, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 
 Frame_2.Parent = Frame
-Frame_2.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Frame_2.Size = UDim2.new(0, 438, 0, 238)
-Frame_2.Active = true
-Frame_2.Draggable = true
+Frame_2.Size = UDim2.new(1, 0, 1, 0)
+Frame_2.BackgroundTransparency = 1
 
+Time.Name = "Time"
 Time.Parent = Frame_2
-Time.Size = UDim2.new(0, 437, 0, 31)
-Time.Text = "RespectFilteringEnabled(RFE) : nil"
+Time.Size = UDim2.new(1, 0, 0, 30)
+Time.Position = UDim2.new(0, 0, 0, 0)
 Time.Font = Enum.Font.GothamSemibold
-Time.TextColor3 = Color3.fromRGB(255, 255, 255)
+Time.Text = "RespectFilteringEnabled(RFE): nil"
+Time.TextColor3 = Color3.new(1, 1, 1)
 Time.TextScaled = true
 Time.BackgroundTransparency = 1
 
-_1E.Name = "1E"
-_1E.Parent = Frame_2
-_1E.Position = UDim2.new(0.018, 0, 0.676, 0)
-_1E.Size = UDim2.new(0, 208, 0, 33)
-_1E.Text = "Mute Game"
-_1E.Font = Enum.Font.SourceSans
-_1E.TextColor3 = Color3.new(1, 1, 1)
-_1E.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UICorner.Parent = _1E
+SmokeBtn.Parent = Frame_2
+SmokeBtn.Size = UDim2.new(0, 140, 0, 30)
+SmokeBtn.Position = UDim2.new(0.03, 0, 0.9, 0)
+SmokeBtn.Text = "Spam Smoke_FE"
+SmokeBtn.Font = Enum.Font.SourceSans
+SmokeBtn.TextColor3 = Color3.new(1,1,1)
+SmokeBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
 
-_3E.Name = "3E"
-_3E.Parent = Frame_2
-_3E.Position = UDim2.new(0.016, 0, 0.143, 0)
-_3E.Size = UDim2.new(0, 209, 0, 33)
-_3E.Text = "Annoying Sound"
-_3E.Font = Enum.Font.SourceSans
-_3E.TextColor3 = Color3.new(1, 1, 1)
-_3E.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UICorner_2.Parent = _3E
+BackfireBtn.Parent = Frame_2
+BackfireBtn.Size = UDim2.new(0, 140, 0, 30)
+BackfireBtn.Position = UDim2.new(0.37, 0, 0.9, 0)
+BackfireBtn.Text = "Spam Backfire_FE"
+BackfireBtn.Font = Enum.Font.SourceSans
+BackfireBtn.TextColor3 = Color3.new(1,1,1)
+BackfireBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
 
-SE.Name = "SE"
-SE.Parent = Frame_2
-SE.Position = UDim2.new(0.509, 0, 0.143, 0)
-SE.Size = UDim2.new(0, 209, 0, 33)
-SE.Text = "Kill Sound Service"
-SE.Font = Enum.Font.SourceSans
-SE.TextColor3 = Color3.new(1, 1, 1)
-SE.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UICorner_3.Parent = SE
+AC6Btn.Parent = Frame_2
+AC6Btn.Size = UDim2.new(0, 140, 0, 30)
+AC6Btn.Position = UDim2.new(0.71, 0, 0.9, 0)
+AC6Btn.Text = "Spam AC6_FE"
+AC6Btn.Font = Enum.Font.SourceSans
+AC6Btn.TextColor3 = Color3.new(1,1,1)
+AC6Btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
 
-Path.Parent = Frame_2
-Path.Position = UDim2.new(0.007, 0, 0.815, 0)
-Path.Size = UDim2.new(0, 435, 0, 44)
-Path.Text = "Dev Note: RFE must be false for FE effects to work."
-Path.Font = Enum.Font.GothamSemibold
-Path.TextColor3 = Color3.fromRGB(255, 0, 0)
-Path.TextScaled = true
-Path.BackgroundTransparency = 1
-
-Stop.Name = "Stop"
-Stop.Parent = Frame_2
-Stop.Position = UDim2.new(0.018, 0, 0.311, 0)
-Stop.Size = UDim2.new(0, 424, 0, 33)
-Stop.Text = "Stop"
-Stop.Font = Enum.Font.SourceSans
-Stop.TextColor3 = Color3.new(1, 1, 1)
-Stop.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UICorner_4.Parent = Stop
-
-IY.Name = "IY"
-IY.Parent = Frame_2
-IY.Position = UDim2.new(0.509, 0, 0.676, 0)
-IY.Size = UDim2.new(0, 209, 0, 33)
-IY.Text = "Unmute Game"
-IY.Font = Enum.Font.SourceSans
-IY.TextColor3 = Color3.new(1, 1, 1)
-IY.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-UICorner_5.Parent = IY
-
-TextLabel_2.Parent = Frame_2
-TextLabel_2.Position = UDim2.new(0.018, 0, 0.466, 0)
-TextLabel_2.Size = UDim2.new(0, 426, 0, 50)
-TextLabel_2.Text = "Wait Speed       :"
-TextLabel_2.Font = Enum.Font.GothamSemibold
-TextLabel_2.TextColor3 = Color3.new(1, 1, 1)
-TextLabel_2.TextSize = 30
-TextLabel_2.TextXAlignment = Enum.TextXAlignment.Left
-TextLabel_2.BackgroundTransparency = 1
-
-WaitBox.Name = "Wait()"
 WaitBox.Parent = Frame_2
-WaitBox.Position = UDim2.new(0.532, 0, 0.466, 0)
-WaitBox.Size = UDim2.new(0, 199, 0, 50)
+WaitBox.Size = UDim2.new(0, 200, 0, 30)
+WaitBox.Position = UDim2.new(0.5, -100, 0.8, 0)
 WaitBox.Text = "0.5"
 WaitBox.Font = Enum.Font.GothamSemibold
+WaitBox.TextScaled = true
 WaitBox.TextColor3 = Color3.new(1, 1, 1)
-WaitBox.TextSize = 30
-WaitBox.ClearTextOnFocus = false
-WaitBox.BackgroundTransparency = 1
+WaitBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 
--- Funciones
-local SoundService = game:GetService("SoundService")
-local StarterGui = game:GetService("StarterGui")
+Stop.Parent = Frame_2
+Stop.Size = UDim2.new(1, -20, 0, 30)
+Stop.Position = UDim2.new(0, 10, 0.7, 0)
+Stop.Text = "🛑 Detener todo"
+Stop.Font = Enum.Font.SourceSans
+Stop.TextColor3 = Color3.new(1, 1, 1)
+Stop.BackgroundColor3 = Color3.fromRGB(120, 30, 30)
 
-local Active = false
-local Mute = false
+-- Logic control
+local SpamActive = false
 
 local function RFEBlock()
 	if SoundService.RespectFilteringEnabled then
+		print("⚠️ RespectFilteringEnabled está activado. Bloqueando función FE...")
 		StarterGui:SetCore("SendNotification", {
 			Title = "⚠️ Bloqueado por RFE",
 			Text = "Esta función no funciona con RespectFilteringEnabled activado.",
@@ -153,77 +122,49 @@ local function RFEBlock()
 	return false
 end
 
-Exit.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
-end)
-
-IY.MouseButton1Click:Connect(function()
+local function startSpamRemote(remoteName, remoteArg)
 	if RFEBlock() then return end
-	Mute = false
-end)
-
-_1E.MouseButton1Click:Connect(function()
-	if RFEBlock() then return end
-	Mute = true
+	SpamActive = true
+	print("📡 Spameando ", remoteName, " con argumento ", remoteArg)
 	task.spawn(function()
-		while Mute do
-			for _, s in ipairs(workspace:GetDescendants()) do
-				if s:IsA("Sound") then s:Stop() end
+		while SpamActive do
+			for _, r in ipairs(Workspace:GetDescendants()) do
+				if r:IsA("RemoteEvent") and r.Name == remoteName then
+					print("📨 Enviando a ", r:GetFullName())
+					r:FireServer(remoteArg)
+				end
 			end
-			task.wait(0.1)
+			task.wait(tonumber(WaitBox.Text) or 0.5)
 		end
 	end)
+end
+
+SmokeBtn.MouseButton1Click:Connect(function()
+	startSpamRemote("Smoke_FE", "SQ")
 end)
 
-_3E.MouseButton1Click:Connect(function()
-	if RFEBlock() then return end
-	for _, s in ipairs(workspace:GetDescendants()) do
-		if s:IsA("Sound") then s:Play() end
-	end
+BackfireBtn.MouseButton1Click:Connect(function()
+	startSpamRemote("Backfire_FE", "Backfire1")
 end)
 
-SE.MouseButton1Click:Connect(function()
-	if RFEBlock() then return end
-	Active = true
-	task.spawn(function()
-		while Active do
-			local delayTime = tonumber(WaitBox.Text) or 0.5
-			task.wait(delayTime)
-			for _, s in ipairs(workspace:GetDescendants()) do
-				if s:IsA("Sound") then s:Play() end
-			end
-		end
-	end)
+AC6Btn.MouseButton1Click:Connect(function()
+	startSpamRemote("AC6_FE_Sounds", "SQ")
 end)
 
 Stop.MouseButton1Click:Connect(function()
-	Active = false
+	SpamActive = false
+	print("⏹️ Spam detenido")
 end)
 
--- Verificación continua RespectFilteringEnabled
-task.spawn(function()
-	while true do
-		task.wait(0.5)
-		local RFE = SoundService.RespectFilteringEnabled
-		if RFE then
-			Time.TextColor3 = Color3.fromRGB(255, 0, 0)
-			Time.Text = "RespectFilteringEnabled(RFE) : true ❌ (Client-only)"
-		else
-			Time.TextColor3 = Color3.fromRGB(0, 255, 0)
-			Time.Text = "RespectFilteringEnabled(RFE) : false ✅ (FE exploits OK)"
-		end
+-- Actualizar RFE dinámicamente
+while true do
+	task.wait(0.5)
+	local setting = SoundService.RespectFilteringEnabled
+	if setting then
+		Time.Text = "RespectFilteringEnabled(RFE): true"
+		Time.TextColor3 = Color3.fromRGB(255, 0, 0)
+	else
+		Time.Text = "RespectFilteringEnabled(RFE): false"
+		Time.TextColor3 = Color3.fromRGB(0, 255, 0)
 	end
-end)
-
--- Sonido de carga inicial
-local notification = Instance.new("Sound")
-notification.SoundId = "rbxassetid://9086208751"
-notification.Volume = 5
-notification.Parent = SoundService
-notification:Play()
-
-StarterGui:SetCore("SendNotification", {
-	Title = "FELAG",
-	Text = "FELAG Ha sido cargado - FE UI cargada correctamente.",
-	Duration = 6
-})
+end
